@@ -1,0 +1,142 @@
+Name- Himanshu Singh
+Roll no- 2K20/ME/115
+CODE- 
+CREATING DATABASE AND TABLES
+#Creating database
+Create database skyhack;
+Use skyhack;
+#Creating Tables
+CREATE TABLE Flight_inservice_Inventory (
+    flight_number INT,
+    departure_station_code VARCHAR(10),
+    arrival_station_code VARCHAR(10),
+    scheduled_departure_dtl DATE,
+    entree_product_id VARCHAR(20),
+    entree_description VARCHAR(255),
+    entree_code VARCHAR(10),
+    planned_entree_count INT,
+    consumed_entree_count INT,
+    UNIQUE (flight_number, departure_station_code, arrival_station_code, scheduled_departure_dtl, entree_product_id));
+
+CREATE TABLE inflight_Service (
+    flight_number INT,
+    departure_station_code VARCHAR(10),
+    arrival_station_code VARCHAR(10),
+    record_locator VARCHAR(20),
+    carrier_code VARCHAR(10),
+    scheduled_departure_dtl DATE,
+    cabin_code VARCHAR(20),
+    meal_short_description VARCHAR(200),
+    meal_group VARCHAR(50),
+    meal_category VARCHAR(500),
+    meal_description VARCHAR(900),
+    is_entree CHAR(100),
+    meal_preorder_quantity INT,
+    UNIQUE (flight_number, departure_station_code, arrival_station_code, scheduled_departure_dtl, record_locator));
+
+
+CREATE TABLE customer_comments (
+    flight_number INT,
+    origin_station_code VARCHAR(10),
+    destination_station_code VARCHAR(10),
+    scheduled_departure_dtl DATE,
+    arrival_delay_group VARCHAR(50),
+    departure_delay_group VARCHAR(50),
+    entity VARCHAR(50),
+    verbatim_text VARCHAR(5000),
+    seat_factor_band VARCHAR(500),
+    ques_verbatim_text VARCHAR(10000),
+    loyalty_program_level VARCHAR(500),
+    fleet_type_description VARCHAR(100),
+    fleet_usage VARCHAR(50),
+    response_group VARCHAR(50),
+    UNIQUE (flight_number, scheduled_departure_dtl, origin_station_code, destination_station_code));
+
+
+CREATE TABLE flight_Satisfactory_score (
+    flight_number INT,
+    origin_station_code VARCHAR(10),
+    destination_station_code VARCHAR(10),
+    record_locator VARCHAR(20),
+    scheduled_departure_dtl DATE,
+    question_text VARCHAR(1000),
+    score VARCHAR(1),
+    satisfaction_type VARCHAR(15),
+    driver_sub_group1 VARCHAR(100),
+    driver_sub_group2 VARCHAR(100),
+    arrival_delay_minutes INT,
+    arrival_delay_group VARCHAR(50),
+    cabin_code_desc VARCHAR(100),
+    cabin_name VARCHAR(50),
+    entity VARCHAR(50),
+    number_of_legs INT,
+    seat_factor_band VARCHAR(50),
+    loyalty_program_level VARCHAR(50),
+    generation VARCHAR(50),
+    fleet_type_description VARCHAR(100),
+    fleet_usage VARCHAR(50),
+    equipment_type_code VARCHAR(10),
+    ua_uax VARCHAR(10),
+    actual_flown_miles INT,
+    haul_type VARCHAR(20),
+    departure_gate VARCHAR(10),
+    arrival_gate VARCHAR(10),
+    international_domestic_indicator VARCHAR(20),
+    response_group VARCHAR(50),
+    media_provider VARCHAR(50),
+    hub_spoke VARCHAR(20),
+    UNIQUE (flight_number, scheduled_departure_dtl, origin_station_code, destination_station_code, record_locator));
+INSERTING DATA INTO TABLES FROM CSV FILES
+LOAD DATA INFILE ' C:\Users\himan\Downloads\Datasets\Inflight Service_Pre order data.csv'
+INTO TABLE inflight_Service
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+LOAD DATA INFILE '"C:\Users\himan\Downloads\Datasets\Inflight Service_Inventory data.csv"
+INTO TABLE Flight_inservice_Inventory
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+LOAD DATA INFILE ' C:\Users\himan\Downloads\Datasets\Survey data _Customer comments.csv'
+INTO TABLE customer_comments
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+LOAD DATA INFILE ' C:\Users\himan\Downloads\Datasets\Survey data_Inflight Satisfaction Score.csv'
+INTO TABLE flight_Satisfactory_score
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+COUNTING THE SCORE 
+select score, count(*)
+from flight_satisfactory_score
+group by score
+having score < 6 and score > 0
+order by score;
+ 
+SEARCHING FOR A PARTICULAR WORD
+SELECT SUM (CASE WHEN verbatim_text LIKE '%Option%' THEN 1 ELSE 0 END) AS word_count FROM customer_comments;
+ 
+Searched for the more similar words to get a rough idea about what peoples are exactly complaining about. 
+Words searched 
+1.	Option 
+2.	Variety  
+3.	Choice
+4.	Inedible
+5.	Unpalatable
+6.	Disgusting
+7.	Repulsive
+8.	Nasty
+9.	Rancid
+10.	Stale
+11.	Spoiled
+12.	Bland
+13.	Tasteless
+14.	Overcooked
+15.	Burnt
+16.	Sour
+17.	Poor
+18.	Improve
